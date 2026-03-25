@@ -1,115 +1,185 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:project_app/l10n/app_localizations.dart';
-
-import '../../../core/constants/app_constants.dart';
-import '../../../features/app/bloc/app_bloc.dart';
-import '../../../widgets/user_avatar.dart';
 
 class MainTab extends StatelessWidget {
   const MainTab({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!;
-    final appState = context.watch<AppBloc>().state;
-    final user = appState.user;
-
-    final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
-      appBar: AppBar(title: Text(loc.tabMain)),
+      backgroundColor: const Color(0xFFF5F5F7),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
 
-      body: ListView(
-        padding: const EdgeInsets.all(AppConstants.largePadding),
-        children: [
-          Center(
-            child: Column(
-              children: [
-                UserAvatar(photoUrl: user.photoUrl),
-                const SizedBox(height: 16),
-                Text(
-                  loc.greeting(
-                    user.displayName.isNotEmpty
-                        ? user.displayName
-                        : 'User',
+              const Text(
+                "ГЛАВНЫЙ ЭКРАН\n(ЛЕНТА ПРОЕКТОВ)",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+
+              const SizedBox(height: 16),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: "Поиск",
+                        prefixIcon: const Icon(Icons.search),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
                   ),
-                  style: textTheme.headlineMedium,
-                  textAlign: TextAlign.center,
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(Icons.tune),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 12),
+
+              SizedBox(
+                height: 36,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: const [
+                    _Chip(label: "Дизайн", selected: true),
+                    _Chip(label: "Разработка"),
+                    _Chip(label: "Маркетинг"),
+                    _Chip(label: "Онлайн"),
+                    _Chip(label: "Оффлайн"),
+                  ],
                 ),
-              ],
-            ),
+              ),
+
+              const SizedBox(height: 16),
+
+              Expanded(
+                child: PageView(
+                  scrollDirection: Axis.vertical,
+                  children: const [ProjectCard(), ProjectCard(), ProjectCard()],
+                ),
+              ),
+            ],
           ),
-
-          const SizedBox(height: 24),
-
-          _buildBanner(),
-
-          const SizedBox(height: 20),
-
-          _buildProjectCard(),
-          _buildProjectCard(),
-          _buildProjectCard(),
-        ],
+        ),
       ),
     );
   }
+}
 
-  Widget _buildBanner() {
+class _Chip extends StatelessWidget {
+  final String label;
+  final bool selected;
+
+  const _Chip({required this.label, this.selected = false});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFDCD6FF),
-        borderRadius: BorderRadius.circular(16),
+        color: selected ? Colors.deepPurple : Colors.white,
+        borderRadius: BorderRadius.circular(20),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              "https://picsum.photos/400/200",
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            "Заголовок",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const Text("Текст"),
-        ],
+      child: Text(
+        label,
+        style: TextStyle(color: selected ? Colors.white : Colors.black),
       ),
     );
   }
+}
 
-  Widget _buildProjectCard() {
+class ProjectCard extends StatelessWidget {
+  const ProjectCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.deepPurple, width: 2),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         color: Colors.white,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Название",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 6),
-          const Text("Навыки"),
-          const SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.deepPurple,
+          Container(
+            height: 150,
+            decoration: const BoxDecoration(
+              color: Colors.deepPurple,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            child: const Text("Записаться"),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Redesign приложения для фитнеса",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  "Создаем интуитивный UX для трекера тренировок и питания.",
+                ),
+
+                const SizedBox(height: 10),
+
+                const Text("3/5 мест свободно"),
+
+                const SizedBox(height: 6),
+
+                const Text("Дедлайн: 15 мая 2024"),
+
+                const SizedBox(height: 14),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        child: const Text("Откликнуться"),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: const Icon(Icons.favorite_border),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
